@@ -3,6 +3,7 @@ package com.app.management_contacts.service.impl;
 import com.app.management_contacts.dto.mapper.ContactMapper;
 import com.app.management_contacts.dto.model.ContactDto;
 import com.app.management_contacts.dto.request.ContactReq;
+import com.app.management_contacts.exception.NotFoundException;
 import com.app.management_contacts.model.Contact;
 import com.app.management_contacts.repository.ContactRepository;
 import com.app.management_contacts.service.ContactService;
@@ -30,6 +31,21 @@ public class ContactServiceImpl implements ContactService {
         }
 
         return contact != null ? toDto(contact) : null;
+    }
+
+    @Override
+    public ContactDto updateContact(Long id, ContactReq contactReq) throws NotFoundException {
+
+        boolean existContact = contactRepository.existsByIdAndRemoveIsFalse(id);
+        if (!existContact) {
+            throw new NotFoundException("Contact not found");
+        }
+
+        // update detail contact
+        Contact contact = toModel(contactReq).setId(id);
+        contact = contactRepository.save(contact);
+
+        return toDto(contact);
     }
 
     private Contact toModel(ContactReq from) {
