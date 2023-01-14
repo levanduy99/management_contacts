@@ -28,6 +28,10 @@ dependencies {
 	implementation group: 'org.hibernate', name: 'hibernate-validator', version: '8.0.0.Final'
 	implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.3.Final'
 	annotationProcessor "org.mapstruct:mapstruct-processor:1.5.3.Final"
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.2'
+	testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.1'
+	testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.11.0'
 }
 
 tasks.named('test') {
