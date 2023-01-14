@@ -14,4 +14,6 @@ public interface ContactService {
     Page<ContactDto> getContactList(int page, int size);
 
     ContactDto getContactById(Long id);
+
+    void removeContact(Long id) throws NotFoundException;
 }

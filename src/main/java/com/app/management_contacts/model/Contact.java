@@ -33,5 +33,5 @@ public class Contact extends AuditingCRUD {
     @Column(name = "postal_address")
     private String postalAddress;
 
-    private boolean remove = false;
+    private boolean removed = false;
 }

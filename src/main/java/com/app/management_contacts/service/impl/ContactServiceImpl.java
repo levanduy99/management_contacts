@@ -39,7 +39,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public ContactDto updateContact(Long id, ContactReq contactReq) throws NotFoundException {
 
-        boolean existContact = contactRepository.existsByIdAndRemoveIsFalse(id);
+        boolean existContact = contactRepository.existsByIdAndRemovedIsFalse(id);
         if (!existContact) {
             throw new NotFoundException("Contact not found");
         }
@@ -54,17 +54,27 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public Page<ContactDto> getContactList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Contact> contactPage = contactRepository.findAllByRemoveIsFalse(pageable);
+        Page<Contact> contactPage = contactRepository.findAllByRemovedIsFalse(pageable);
         return contactPage.map(this::toDto);
     }
 
     @Override
     public ContactDto getContactById(Long id) {
-        Contact contact = contactRepository.findByIdAndRemoveIsFalse(id);
+        Contact contact = contactRepository.findByIdAndRemovedIsFalse(id);
         if (contact == null) {
             logger.info("[getContactById] not found contact_id: {}", id);
         }
         return toDto(contact);
+    }
+
+    @Override
+    public void removeContact(Long id) throws NotFoundException {
+
+        boolean existContact = contactRepository.existsByIdAndRemovedIsFalse(id);
+        if (!existContact) {
+            throw new NotFoundException("Contact not found");
+        }
+        contactRepository.updateRemovedTrue(id);
     }
 
     private Contact toModel(ContactReq from) {

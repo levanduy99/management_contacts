@@ -51,4 +51,14 @@ public class ContactController {
     public MessageResponse<ContactDto> getContact(@PathVariable Long id) {
         return MessageResponse.ofSuccess(contactService.getContactById(id));
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public MessageResponse<Void> deleteContact(@PathVariable Long id) throws ApiException {
+
+        //TODO: check permission
+
+        contactService.removeContact(id);
+        return MessageResponse.ofSuccess();
+    }
 }
