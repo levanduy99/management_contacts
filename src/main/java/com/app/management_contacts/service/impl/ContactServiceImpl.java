@@ -10,6 +10,9 @@ import com.app.management_contacts.service.ContactService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,6 +48,22 @@ public class ContactServiceImpl implements ContactService {
         Contact contact = toModel(contactReq).setId(id);
         contact = contactRepository.save(contact);
 
+        return toDto(contact);
+    }
+
+    @Override
+    public Page<ContactDto> getContactList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Contact> contactPage = contactRepository.findAllByRemoveIsFalse(pageable);
+        return contactPage.map(this::toDto);
+    }
+
+    @Override
+    public ContactDto getContactById(Long id) {
+        Contact contact = contactRepository.findByIdAndRemoveIsFalse(id);
+        if (contact == null) {
+            logger.info("[getContactById] not found contact_id: {}", id);
+        }
         return toDto(contact);
     }
 

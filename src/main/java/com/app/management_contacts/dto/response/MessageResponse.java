@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;
@@ -43,6 +44,17 @@ public class MessageResponse<T> {
         result.status = HttpStatus.OK.value();
         result.message = HttpStatus.OK.name();
         result.data = data;
+        return result;
+    }
+
+    public static <T> MessageResponse<T> ofSuccess(Page<T> dataPage) {
+        MessageResponse<T> result = new MessageResponse<>();
+        result.setStatus(HttpStatus.OK.value());
+        result.setMessage(HttpStatus.OK.name());
+        MessageListData<T> data = new MessageListData<>();
+        data.setItems(dataPage.getContent());
+        data.setTotal(dataPage.getTotalElements());
+        result.setData((T) data);
         return result;
     }
 
