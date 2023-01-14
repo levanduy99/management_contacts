@@ -1,9 +1,14 @@
 package com.app.management_contacts.controller;
 
-import com.app.management_contacts.model.Contact;
-import com.app.management_contacts.repository.ContactRepository;
-import jakarta.annotation.PostConstruct;
+import com.app.management_contacts.dto.model.ContactDto;
+import com.app.management_contacts.dto.request.ContactReq;
+import com.app.management_contacts.dto.response.MessageResponse;
+import com.app.management_contacts.service.ContactService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,18 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContactController {
 
     @Autowired
-    private ContactRepository contactRepository;
+    private ContactService contactService;
 
-    @PostConstruct
-    private void test() {
-        System.out.println("test insert db");
-        Contact contact = new Contact()
-                .setFirstName("duy")
-                .setLastName("le")
-                .setEmail("duyle@gmail.com")
-                .setPhoneNumber("0973566726")
-                .setPostalAddress("hcmcity");
-        contactRepository.save(contact);
-        System.out.println("save test insert db");
+    @PostMapping("")
+    public MessageResponse<ContactDto> addContact(@RequestBody @Valid ContactReq contactReq) {
+        ContactDto result = contactService.addContact(contactReq);
+        return result != null ? MessageResponse.ofSuccess(result) :
+                MessageResponse.ofError(HttpStatus.NOT_ACCEPTABLE.value(), HttpStatus.NOT_ACCEPTABLE.name(), null);
     }
 }
