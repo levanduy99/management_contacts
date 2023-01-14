@@ -38,11 +38,13 @@ public class ContactController {
 
     @GetMapping("")
     public MessageResponse<ContactDto> getContactList(
+            @RequestParam(required = false, value = "first_name") String firstName,
+            @RequestParam(required = false, value = "last_name") String lastName,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size
     ) {
 
-        Page<ContactDto> result = contactService.getContactList(page, size);
+        Page<ContactDto> result = contactService.getContactList(firstName, lastName, page, size);
 
         return MessageResponse.ofSuccess(result);
     }

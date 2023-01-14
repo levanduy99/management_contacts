@@ -52,9 +52,9 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public Page<ContactDto> getContactList(int page, int size) {
+    public Page<ContactDto> getContactList(String firstName, String lastName, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Contact> contactPage = contactRepository.findAllByRemovedIsFalse(pageable);
+        Page<Contact> contactPage = contactRepository.findAllByName(firstName, lastName, pageable);
         return contactPage.map(this::toDto);
     }
 

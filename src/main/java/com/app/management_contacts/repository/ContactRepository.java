@@ -19,6 +19,14 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     Page<Contact> findAllByRemovedIsFalse(Pageable pageable);
 
+    @Query(value = "SELECT c FROM Contact c " +
+            "WHERE c.removed = false " +
+            "AND (:firstName IS NULL OR c.firstName = :firstName) " +
+            "AND (:lastName IS NULL OR c.lastName = :lastName)")
+    Page<Contact> findAllByName(
+            @Param("firstName") String firstName, @Param("lastName") String lastName, Pageable pageable
+    );
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE Contact c SET c.removed = true WHERE c.id = :id")

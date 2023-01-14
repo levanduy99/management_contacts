@@ -11,7 +11,7 @@ public interface ContactService {
 
     ContactDto updateContact(Long id, ContactReq contactReq) throws NotFoundException;
 
-    Page<ContactDto> getContactList(int page, int size);
+    Page<ContactDto> getContactList(String firstName, String lastName, int page, int size);
 
     ContactDto getContactById(Long id);
 
