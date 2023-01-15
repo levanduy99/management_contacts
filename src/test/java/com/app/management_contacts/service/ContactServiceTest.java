@@ -2,6 +2,7 @@ package com.app.management_contacts.service;
 
 import com.app.management_contacts.dto.model.ContactDto;
 import com.app.management_contacts.dto.request.ContactReq;
+import com.app.management_contacts.exception.NotFoundException;
 import com.app.management_contacts.model.Contact;
 import com.app.management_contacts.repository.ContactRepository;
 import com.app.management_contacts.service.impl.ContactServiceImpl;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,10 +54,32 @@ class ContactServiceTest {
         assertEquals(getContactReq().getFirstName(), contactDto.getFirstName());
         assertEquals(getContactReq().getEmail(), contactDto.getEmail());
     }
-//
-//    @Test
-//    void updateContact() {
-//    }
+
+    @Test
+    void updateContactSuccess() throws NotFoundException {
+        //given
+        Mockito.when(contactRepository.existsByIdAndRemovedIsFalse(getContact().getId())).thenReturn(true);
+        Mockito.when(contactRepository.save(any())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+
+        //when
+        ContactDto contactDto = underTest.updateContact(getContact().getId(), getContactReq());
+
+        //then
+        assertEquals(getContactReq().getFirstName(), contactDto.getFirstName());
+        assertEquals(getContactReq().getEmail(), contactDto.getEmail());
+    }
+
+    @Test
+    void updateContactFailureWhenContactNotFound() {
+        //given
+        Mockito.when(contactRepository.existsByIdAndRemovedIsFalse(getContact().getId())).thenReturn(false);
+
+        //when
+        //then
+        assertThatThrownBy(() -> underTest.updateContact(getContact().getId(), getContactReq()))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Contact not found");
+    }
 
     @Test
     void getContactList() {
