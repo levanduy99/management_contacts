@@ -5,6 +5,7 @@ import com.app.management_contacts.dto.request.ContactReq;
 import com.app.management_contacts.dto.response.MessageResponse;
 import com.app.management_contacts.exception.ApiException;
 import com.app.management_contacts.service.ContactService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ public class ContactController {
     @Autowired
     private ContactService contactService;
 
+    @Operation(summary = "Add a contact")
     @PostMapping("")
     public MessageResponse<ContactDto> addContact(@RequestBody @Valid ContactReq contactReq) {
         ContactDto result = contactService.addContact(contactReq);
@@ -25,6 +27,7 @@ public class ContactController {
                 MessageResponse.ofError(HttpStatus.NOT_ACCEPTABLE.value(), HttpStatus.NOT_ACCEPTABLE.name(), null);
     }
 
+    @Operation(summary = "Update an existing contact")
     @PutMapping("/{id}")
     public MessageResponse<ContactDto> updateContact(
             @PathVariable Long id,
@@ -36,6 +39,8 @@ public class ContactController {
         return MessageResponse.ofSuccess(result);
     }
 
+    @Operation(summary = "Get all contacts",
+            description = "Get all contacts, search the contact by first name or last name")
     @GetMapping("")
     public MessageResponse<ContactDto> getContactList(
             @RequestParam(required = false, value = "first_name") String firstName,
@@ -49,11 +54,13 @@ public class ContactController {
         return MessageResponse.ofSuccess(result);
     }
 
+    @Operation(summary = "Get a contact by its id")
     @GetMapping("/{id}")
     public MessageResponse<ContactDto> getContact(@PathVariable Long id) {
         return MessageResponse.ofSuccess(contactService.getContactById(id));
     }
 
+    @Operation(summary = "Delete a contact")
     @DeleteMapping("/{id}")
     @ResponseBody
     public MessageResponse<Void> deleteContact(@PathVariable Long id) throws ApiException {
