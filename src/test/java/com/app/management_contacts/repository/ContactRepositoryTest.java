@@ -55,4 +55,18 @@ class ContactRepositoryTest {
         assertEquals(result.get(0).getFirstName(), "Duy");
         assertEquals(result.get(1).getFirstName(), "Duy");
     }
+
+    @Test
+    void canUpdateContactWithRemovedTrue() {
+        //given
+        Contact contact = new Contact().setFirstName("Duy").setLastName("Le").setEmail("leduy@gmail.com").setPhoneNumber("+8487366728").setPostalAddress("hcm city");
+        underTest.save(contact);
+
+        //when
+        underTest.updateRemovedTrue(contact.getId());
+        Boolean expected = underTest.existsByIdAndRemovedIsFalse(contact.getId());
+
+        //then
+        assertThat(expected).isFalse();
+    }
 }
