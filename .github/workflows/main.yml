@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           distribution: 'corretto'
-          java-version: 17
+          java-version: '17'
       - name: Unit Tests
         run: ./gradlew test
       - name: Build the application
